@@ -1,0 +1,59 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        Vehicle car1 = new Vehicle("Toyota", "Camry", 2020);
+        Vehicle car2 = new Vehicle("Honda", "Civic", 2022);
+        Vehicle bike1 = new Vehicle("Harley Davidson", "Street Bob", 2019);
+        Vehicle bike2 = new Vehicle("Yamaha", "R6", 2021);
+
+        Garage garage = new Garage();
+        garage.addVehicle(car1);
+        garage.addVehicle(car2);
+        garage.addVehicle(bike1);
+        garage.addVehicle(bike2);
+
+        System.out.println("Все транспортные средства в гараже:");
+        garage.getVehicles().forEach(System.out::println);
+    }
+}
+
+class Vehicle {
+    private String brand;
+    private String model;
+    private int year;
+
+    public Vehicle(String brand, String model, int year) {
+        this.brand = brand;
+        this.model = model;
+        this.year = year;
+    }
+
+    @Override
+    public String toString() {
+        return brand + " " + model + " (" + year + ")";
+    }
+}
+
+class Garage {
+    private List<Vehicle> vehicles = new ArrayList<>();
+
+    public void addVehicle(Vehicle vehicle) {
+        vehicles.add(vehicle);
+    }
+
+    public List<Vehicle> getVehicles() {
+        return vehicles;
+    }
+}
+
+
+Все транспортные средства в гараже:
+Toyota Camry (2020)
+Honda Civic (2022)
+Harley Davidson Street Bob (2019)
+Yamaha R6 (2021)
+
+
+** Process exited - Return Code: 0 **

@@ -1,0 +1,133 @@
+import java.util.ArrayList;
+import java.util.List;
+interface IPayment {
+    void processPayment(double amount);
+}
+
+class CreditCardPayment implements IPayment {
+    @Override
+    public void processPayment(double amount) {
+        System.out.println("Обработка платежа по кредитной карте на сумму: " + amount);
+    }
+}
+
+class PayPalPayment implements IPayment {
+    @Override
+    public void processPayment(double amount) {
+        System.out.println("Обработка платежа через PayPal на сумму: " + amount);
+    }
+}
+
+class BankTransferPayment implements IPayment {
+    @Override
+    public void processPayment(double amount) {
+        System.out.println("Обработка платежа банковским переводом на сумму: " + amount);
+    }
+}
+
+interface IDelivery {
+    void deliverOrder(Order order);
+}
+
+class CourierDelivery implements IDelivery {
+    @Override
+    public void deliverOrder(Order order) {
+        System.out.println("Доставка заказа курьером.");
+    }
+}
+
+class PostDelivery implements IDelivery {
+    @Override
+    public void deliverOrder(Order order) {
+        System.out.println("Доставка заказа почтой.");
+    }
+}
+
+class PickUpPointDelivery implements IDelivery {
+    @Override
+    public void deliverOrder(Order order) {
+        System.out.println("Заказ готов к выдаче в пункте выдачи.");
+    }
+}
+
+interface INotification {
+    void sendNotification(String message);
+}
+
+class EmailNotification implements INotification {
+    @Override
+    public void sendNotification(String message) {
+        System.out.println("Уведомление по электронной почте: " + message);
+    }
+}
+
+class SmsNotification implements INotification {
+    @Override
+    public void sendNotification(String message) {
+        System.out.println("Уведомление по SMS: " + message);
+    }
+}
+
+class DiscountCalculator {
+    public double calculateDiscount(double totalAmount) {
+        return totalAmount * 0.1;
+    }
+}
+
+class Order {
+    private final List<String> items;
+    private final double basePrice;
+    private final IPayment paymentMethod;
+    private final IDelivery deliveryMethod;
+
+    public Order(IPayment paymentMethod, IDelivery deliveryMethod, double basePrice) {
+        this.items = new ArrayList<>();
+        this.paymentMethod = paymentMethod;
+        this.deliveryMethod = deliveryMethod;
+        this.basePrice = basePrice;
+    }
+
+    public void addItem(String item) {
+        items.add(item);
+    }
+
+    public double calculateTotal() {
+        DiscountCalculator discountCalculator = new DiscountCalculator();
+        double totalDiscount = discountCalculator.calculateDiscount(basePrice);
+        return basePrice - totalDiscount;
+    }
+
+    public void processOrder() {
+        double totalAmount = calculateTotal();
+        paymentMethod.processPayment(totalAmount);
+        deliveryMethod.deliverOrder(this);
+    }
+}
+
+class OrderManager {
+    private final INotification notification;
+
+    public OrderManager(INotification notification) {
+        this.notification = notification;
+    }
+
+    public void placeOrder(Order order) {
+        order.processOrder();
+        notification.sendNotification("Ваш заказ был обработан и будет доставлен в ближайшее время!");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        IPayment paymentMethod = new CreditCardPayment();
+        IDelivery deliveryMethod = new CourierDelivery();
+        INotification notification = new EmailNotification();
+
+        Order order = new Order(paymentMethod, deliveryMethod, 100.0);
+        order.addItem("Товар 1");
+        order.addItem("Товар 2");
+
+        OrderManager orderManager = new OrderManager(notification);
+        orderManager.placeOrder(order);
+    }
+}

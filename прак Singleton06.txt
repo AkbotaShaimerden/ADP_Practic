@@ -1,0 +1,82 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+enum LogLevel {
+    INFO, WARNING, ERROR
+}
+
+class Logger {
+    private static Logger instance;
+    private static final Lock lock = new ReentrantLock();
+    private LogLevel logLevel = LogLevel.INFO;
+    private String logFilePath = "log.txt";
+
+    private Logger() {}
+
+    public static Logger getInstance() {
+        if (instance == null) {
+            lock.lock();
+            try {
+                if (instance == null) {
+                    instance = new Logger();
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+        return instance;
+    }
+
+    public void log(String message, LogLevel level) {
+        if (level.ordinal() >= logLevel.ordinal()) {
+            try (FileWriter writer = new FileWriter(logFilePath, true)) {
+                writer.write(level + ": " + message + "\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setLogLevel(LogLevel level) {
+        logLevel = level;
+    }
+
+    public void setLogFilePath(String path) {
+        logFilePath = path;
+    }
+}
+
+class LogReader {
+    public static void readLog(String filePath) {
+        // Реализация чтения логов из файла
+        // Эта часть задачи требует специфического кода для чтения
+        // Мы можем использовать стандартные методы чтения файлов
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Logger logger = Logger.getInstance();
+        logger.setLogLevel(LogLevel.INFO);
+
+        Thread t1 = new Thread(() -> logger.log("INFO message", LogLevel.INFO));
+        Thread t2 = new Thread(() -> logger.log("WARNING message", LogLevel.WARNING));
+        Thread t3 = new Thread(() -> logger.log("ERROR message", LogLevel.ERROR));
+
+        t1.start();
+        t2.start();
+        t3.start();
+
+        try {
+            t1.join();
+            t2.join();
+            t3.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        LogReader.readLog("log.txt");
+    }
+}

@@ -1,0 +1,75 @@
+class Report {
+    private String header;
+    private String content;
+    private String footer;
+
+    public void setHeader(String header) { this.header = header; }
+    public void setContent(String content) { this.content = content; }
+    public void setFooter(String footer) { this.footer = footer; }
+
+    @Override
+    public String toString() {
+        return "Header: " + header + "\nContent: " + content + "\nFooter: " + footer;
+    }
+}
+
+interface IReportBuilder {
+    void setHeader();
+    void setContent();
+    void setFooter();
+    Report getReport();
+}
+
+class TextReportBuilder implements IReportBuilder {
+    private Report report = new Report();
+
+    public void setHeader() { report.setHeader("Текстовый заголовок отчета"); }
+    public void setContent() { report.setContent("Это содержание текстового отчета."); }
+    public void setFooter() { report.setFooter("Нижний колонтитул текстового отчета"); }
+
+    public Report getReport() { return report; }
+}
+
+class HtmlReportBuilder implements IReportBuilder {
+    private Report report = new Report();
+
+    public void setHeader() { report.setHeader("<h1>HTML-заголовок отчета</h1>"); }
+    public void setContent() { report.setContent("<p>Это содержимое HTML-отчета.</p>"); }
+    public void setFooter() { report.setFooter("<footer>Нижний колонтитул HTML-отчета</footer>"); }
+
+    public Report getReport() { return report; }
+}
+
+class ReportDirector {
+    private IReportBuilder builder;
+
+    public ReportDirector(IReportBuilder builder) {
+        this.builder = builder;
+    }
+
+    public void constructReport() {
+        builder.setHeader();
+        builder.setContent();
+        builder.setFooter();
+    }
+
+    public Report getReport() {
+        return builder.getReport();
+    }
+}
+
+public class MainBuilder {
+    public static void main(String[] args) {
+        IReportBuilder textBuilder = new TextReportBuilder();
+        ReportDirector director = new ReportDirector(textBuilder);
+        director.constructReport();
+        Report textReport = director.getReport();
+        System.out.println(textReport);
+
+        IReportBuilder htmlBuilder = new HtmlReportBuilder();
+        director = new ReportDirector(htmlBuilder);
+        director.constructReport();
+        Report htmlReport = director.getReport();
+        System.out.println(htmlReport);
+    }
+}

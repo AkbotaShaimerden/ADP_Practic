@@ -1,0 +1,57 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+    
+        UserManager userManager = new UserManager();
+
+     
+        userManager.addUser(new User("Карина", "karina@gmail.com", "Admin"));
+        userManager.addUser(new User("Айжан", "aizhan@gmail.com", "User"));
+
+  
+        userManager.printUsers();
+    }
+}
+
+
+class User {
+    String name;
+    String email;
+    String role;
+
+    public User(String name, String email, String role) {
+        this.name = name;
+        this.email = email;
+        this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + email + "), Роль: " + role;
+    }
+}
+
+
+class UserManager {
+    List<User> users = new ArrayList<>();
+
+    public void addUser(User user) {
+        users.add(user);
+    }
+
+    public void printUsers() {
+        for (User user : users) {
+            System.out.println(user);
+        }
+    }
+}
+
+
+
+Карина (karina@gmail.com), Роль: Admin
+Айжан (aizhan@gmail.com), Роль: User
+
+
+** Process exited - Return Code: 0 **
